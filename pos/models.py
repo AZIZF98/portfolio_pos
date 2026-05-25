@@ -12,7 +12,15 @@ class Customer(models.Model):
     last_name = models.CharField(max_length=200)
     email = models.EmailField()
 
-class PostOrder(models.Model):
+class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     transaction_date = models.DateField()
     cashier = models.CharField(max_length=200)
+    total = models.FloatField()
+
+class OrderLine(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    price = models.FloatField()
+    subtotal = models.FloatField()
