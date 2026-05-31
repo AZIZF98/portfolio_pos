@@ -4,7 +4,7 @@ from django.db import models
 class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.FloatField()
-    manufacturing_date = models.IntegerField()
+    manufacturing_date = models.DateField()
     notes = models.TextField()
 
 class Customer(models.Model):
