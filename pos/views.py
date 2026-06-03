@@ -27,13 +27,19 @@ def product_delete(request):
 def product_get_detail(request):
     return Response()
 
-@api_view(['GET'])
-def order_list(request):
-    orders = Order.objects.all()
-    serializer = OrderSerializer(orders, many=True)
-    return Response(serializer.data)
-def order_create(request):
-    return Response()
+@api_view(['GET','POST'])
+def orders(request):
+    if request.method == 'GET':
+        orders = Order.objects.all()
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+    data =request.data
+    serializer = OrderSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
 def order_update(request):
     return Response()
 def order_delete(request):

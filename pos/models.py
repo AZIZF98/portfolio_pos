@@ -18,9 +18,12 @@ class Order(models.Model):
     cashier = models.CharField(max_length=200)
     total = models.FloatField()
 
+
 class OrderLine(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='lines')
+    quantity = models.IntegerField()
+    price = models.FloatField()
     quantity = models.IntegerField()
     price = models.FloatField()
     subtotal = models.FloatField()
