@@ -13,10 +13,17 @@ class Customer(models.Model):
     email = models.EmailField()
 
 class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+        ('canceled', 'Canceled')
+    ]
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     transaction_date = models.DateField()
     cashier = models.CharField(max_length=200)
     total = models.FloatField()
+    status= models.CharField(max_length=200, choices=STATUS_CHOICES, default='pending')
+    invoice_number = models.CharField(max_length=200,default='')
 
 
 class OrderLine(models.Model):

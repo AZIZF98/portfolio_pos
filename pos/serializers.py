@@ -1,3 +1,4 @@
+import uuid
 from http.cookiejar import debug
 
 from django.db import transaction
@@ -26,7 +27,17 @@ class OrderSerializer(serializers.ModelSerializer):
     lines = OrderLinerSerializer(many=True)
     class Meta:
         model = Order
-        fields = ['id','customer','customer_id','transaction_date', 'cashier', 'total', 'lines']
+        fields = [
+            'id',
+            'customer',
+            'customer_id',
+            'transaction_date',
+            'cashier',
+            'total',
+            'lines',
+            'invoice_number',
+            'status'
+        ]
 
     @transaction.atomic
     def create(self, validated_data):
@@ -35,6 +46,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
         if validated_data.get('customer_id'):
             validated_data['customer_id'] = validated_data['customer_id'].id
+        validated_data['invoice_number'] = f"INV-{uuid.uuid4().hex[:8]}".upper()
         order = Order.objects.create(**validated_data)
 
         for line in lines:
