@@ -54,3 +54,30 @@ class OrderSerializer(serializers.ModelSerializer):
             OrderLine.objects.create(**line)
         print(order)
         return order
+
+class PaymentSerializer(serializers.ModelSerializer):
+    order = OrderSerializer(read_only=True)
+    order_id = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
+
+    class Meta:
+        model = Payment
+        fields = [
+            'id',
+            'order_id',
+            'order',
+            'payment_date',
+            'payment_method',
+            'paid_amount',
+            'change_amount',
+        ]
+
+    @transaction.atomic
+    def create(self, validated_data):
+        print("Test Validated")
+        print(validated_data)
+
+        if validated_data.get('order_id'):
+            validated_data['order_id'] = validated_data['order_id'].id
+        
+
+        return Payment.objects.create(**validated_data)

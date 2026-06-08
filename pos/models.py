@@ -34,3 +34,17 @@ class OrderLine(models.Model):
     quantity = models.IntegerField()
     price = models.FloatField()
     subtotal = models.FloatField()
+
+class Payment(models.Model):
+    PAYMENT_CHOICES = [
+        ('cash', 'Cash'),
+        ('qris', 'Qris'),
+        ('transfer', 'Transfer'),
+        ('debit', 'Debit'),
+        ('credit', 'Credit')
+    ]
+    payment_date = models.DateField()
+    payment_method = models.CharField(max_length=200, choices=PAYMENT_CHOICES, default='cash')
+    paid_amount = models.FloatField()
+    change_amount = models.FloatField()
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
