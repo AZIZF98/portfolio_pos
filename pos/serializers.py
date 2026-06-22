@@ -55,6 +55,14 @@ class OrderSerializer(serializers.ModelSerializer):
         print(order)
         return order
 
+
+
+class StockOutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockOut
+        fields = '__all__'
+
+
 class PaymentSerializer(serializers.ModelSerializer):
     order = OrderSerializer(read_only=True)
     order_id = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
@@ -73,11 +81,43 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        print("Test Validated")
-        print(validated_data)
-
         if validated_data.get('order_id'):
+            for line in validated_data['order_id'].lines.all():
+                line_data = {
+                    'order_id' : validated_data['order_id'].id,
+                    'product_id' : line.product_id,
+                    'quantity'  : line.quantity,
+                    'transaction_date' : validated_data['payment_date']
+                }
+                line.product.stock -= line.quantity
+                line.product.save()
+                StockOut.objects.create(**line_data)
+
+            validated_data['order_id'].status = 'Paid'
+            validated_data['order_id'].save()
             validated_data['order_id'] = validated_data['order_id'].id
-        
 
         return Payment.objects.create(**validated_data)
+
+class StockInSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    class Meta:
+        model = StockIn
+        fields = [
+            'id',
+            'product_id',
+            'product',
+            'quantity',
+            'transaction_date',
+            'status',
+        ]
+
+    @transaction.atomic
+    def create(self, validated_data):
+        if validated_data.get('product_id'):
+            validated_data['product_id'] = validated_data['product_id'].id
+
+        return StockIn.objects.create(**validated_data)
+
+

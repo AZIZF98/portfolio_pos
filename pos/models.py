@@ -6,6 +6,7 @@ class Product(models.Model):
     price = models.FloatField()
     manufacturing_date = models.DateField()
     notes = models.TextField()
+    stock = models.FloatField(default=0)
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=200)
@@ -31,8 +32,6 @@ class OrderLine(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='lines')
     quantity = models.IntegerField()
     price = models.FloatField()
-    quantity = models.IntegerField()
-    price = models.FloatField()
     subtotal = models.FloatField()
 
 class Payment(models.Model):
@@ -48,3 +47,20 @@ class Payment(models.Model):
     paid_amount = models.FloatField()
     change_amount = models.FloatField()
     order = models.OneToOneField(Order, on_delete=models.CASCADE)
+
+class StockOut(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.FloatField()
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    transaction_date = models.DateTimeField()
+
+
+class StockIn(models.Model):
+    STATUS_CHOICES=[
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+    ]
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.FloatField()
+    transaction_date = models.DateTimeField()
+    status = models.CharField(max_length=200, choices=STATUS_CHOICES, default='pending')

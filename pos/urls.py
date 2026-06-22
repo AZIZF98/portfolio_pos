@@ -13,11 +13,15 @@ urlpatterns = [
 
 
     path('customer/', views.customers),
-    path('customer/<int:id>', views.customer_update),
-    path('customer/<int:id>', views.customer_delete),
-    path('customer/<int:id>', views.customer_get_detail),
+    path('customer/<int:id>', views.customer_detail),
+
 
     path('payment/', views.payments),
-    path('payment/<int:id>', views.payments_detail)
+    path('payment/<int:id>', views.payments_detail),
 
+    path('stockout/', views.stockout),
+
+
+    path('stockin/', views.stockin),
+    path('stockin/<int:id>/confirm', views.stockin_confirm),
 ]
