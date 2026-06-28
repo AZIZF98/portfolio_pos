@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+from datetime import timedelta
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -121,3 +124,70 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+UNFOLD = {
+    "SITE_TITLE": "ERP Company",
+    "SITE_HEADER": "ERP Dashboard",
+    "ENVIRONMENT": "Development",
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": "Master Data",
+                "icon": "",
+                "link": "",
+                "items": [
+                    {
+                        "title": "Product",
+                        "icon": "",
+                        "link": "/admin/pos/product/",
+                        "items":[]
+                    },
+                    {
+                        "title": "Customer",
+                        "icon": "",
+                        "link": "/admin/pos/customer/",
+                        "items":[]
+                    }
+                ],
+            },
+            {
+                "title": "Transaction",
+                "icon": "",
+                "link": "",
+                "items": [
+                    {
+                        "title": "Order",
+                        "icon": "",
+                        "link": "/admin/pos/order/",
+                        "items":[]
+                    },
+                    {
+                        "title": "StockIn",
+                        "icon": "",
+                        "link": "/admin/pos/stockin/",
+                        "items":[]
+                    },
+{
+                        "title": "Stockout",
+                        "icon": "",
+                        "link": "/admin/pos/stockout/",
+                        "items":[]
+                    }
+                ],
+            },
+        ],
+    },
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}

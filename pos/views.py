@@ -1,14 +1,17 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from pos.models import Product, Order, Customer, Payment, StockOut, StockIn
 from pos.serializers import ProductSerializer, OrderSerializer, CustomerSerializer, PaymentSerializer, \
     StockOutSerializer, StockInSerializer
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+
 
 # Create your views here.
 @api_view(['GET','POST'])
+@permission_classes([IsAuthenticated])
 def products(request):
     if request.method == 'GET':
         products = Product.objects.all()
@@ -22,6 +25,7 @@ def products(request):
     return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'UPDATE', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def product_detail(request, id):
     serializer = ProductSerializer(instance=Product)
     if request.method == 'GET':

@@ -7,11 +7,15 @@ class Product(models.Model):
     manufacturing_date = models.DateField()
     notes = models.TextField()
     stock = models.FloatField(default=0)
+    def __str__(self):
+        return self.name
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     email = models.EmailField()
+    def __str__(self):
+        return self.first_name+" "+self.last_name
 
 class Order(models.Model):
     STATUS_CHOICES = [
